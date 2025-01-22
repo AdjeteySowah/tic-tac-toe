@@ -3,12 +3,14 @@ let gameboard = {
    markers: Array(9).fill(null),
 };
 
-let playerFactory = (name, marker) => {
+
+let playerFactory = function(name, marker) {
    return {
       name,
       marker,
    }
 };
+
 
 let gameController = {
    players: [],
@@ -21,9 +23,17 @@ let gameController = {
       [0,4,8] , [2,4,6]                   // diagonals
    ],
 
-   initializeGame: function() {
+   init: function() {
       this.players = [playerFactory("Player1", "X"), playerFactory("Player2", "O")];
       this.currentPlayer = this.players[0];
+
+      this.cacheDom();
+      this.pageSpecificInit();
+   },
+
+   cacheDom: function() {
+      let body = document.querySelector("body");
+      return body;
    },
 
    switchPlayer: function() {
@@ -76,10 +86,70 @@ let gameController = {
       return draw;
    },
 
-   resetGameboard: function() {
+   resetGameboard: function() {           // check this function
       gameboard.markers.fill(null);
       this.initializeGame();
    },
+
+   pageSpecificInit: function() {
+      if (this.cacheDom().classList.contains("page--1")) {
+         pageOneController.init();
+      } else if (this.cacheDom().classList.contains("page--1")) {
+         pageTwoController.init();
+      }
+   },
 };
 
-gameController.initializeGame();
+
+   // select players
+let pageOneController = {
+   init: function() {
+      this.cacheDom();
+      this.bindEvents();
+   },
+
+   cacheDom: function() {
+      this.startGame = gameController.cacheDom().querySelector(".game__start");
+      this.playerSelection = gameController.cacheDom().querySelector(".game__player-selection");
+   },
+
+   bindEvents: function() {
+      this.startGame.addEventListener("click", this.redirectToMainGame.bind(this));
+      this.playerSelection.addEventListener("click", this.changeBtnColor.bind(this));
+   },
+
+   changeBtnColor: function(event) {
+      if (event.target.classList.contains("light-black")) {
+         event.target.classList.remove("light-black");
+         event.target.classList.add("selected-player");
+      }
+   },
+
+   redirectToMainGame: function() {
+      window.location.href = "tic-tac-toe.html";
+   },
+};
+
+   // play game
+let pageTwoController = {
+   // init: function() {
+   //    this.cacheDom();
+   //    this.bindEvents();
+   //    this.render();
+   // },
+
+   // cacheDom: function() {
+
+   // },
+
+   // bindEvents: function() {
+
+   // },
+
+   // render: function() {
+
+   // },
+};
+
+
+gameController.init();
