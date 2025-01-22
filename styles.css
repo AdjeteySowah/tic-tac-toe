@@ -1,0 +1,141 @@
+   /* || HOST FONT */
+@font-face {
+   font-family: "Ubuntu";
+   font-weight: 500;
+   src: url("./assets/fonts/ubuntu-medium-webfont.woff2") format("woff2"),
+         url("./assets/fonts/ubuntu-medium-webfont.woff") format("woff");
+   font-display: swap;
+}
+
+@font-face {
+   font-family: "Ubuntu";
+   font-weight: 700;
+   src: url("./assets/fonts/ubuntu-bold-webfont.woff2") format("woff2"),
+         url("./assets/fonts/ubuntu-bold-webfont.woff") format("woff");
+   font-display: swap;
+}
+
+   /* || RESET */
+*,
+::before,
+::after {
+   margin: 0;
+   padding: 0;
+}
+
+html {
+   font-size: 10px;
+   line-height: 1.3;
+}
+
+body {
+   -webkit-font-smoothing: antialiased;
+}
+
+/* img {
+   display: block;
+   max-width: 100%;
+} */
+
+button, p, h1 {
+   font: inherit;
+}
+
+p, h1 {
+   overflow-wrap: break-word;
+   font: inherit;
+}
+
+p {
+   text-wrap: pretty;
+}
+
+h1 {
+   text-wrap: balance;
+}
+
+#root, #__next {
+   isolation: isolate;
+}
+
+   /* || CUSTOM PROPERTIES */
+:root {
+   --black: rgb(0, 0, 0);
+   --light-black: rgba(0, 0, 0, 0.5);
+   --white: rgb(255, 255, 255);
+}
+
+
+   /* || GENERAL STYLES */
+body {
+   font-family: "Ubuntu", system-ui, serif;
+   font-weight: 500;
+   font-size: 1.6rem;
+}
+
+.game__interface {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+}
+
+.game__title {
+   font-weight: 700;
+   font-size: 5rem;
+   padding: 5rem 0;
+}
+
+.game__player-selection {
+   display: flex;
+   gap: 10rem;
+   padding-bottom: 5rem;
+}
+
+.player-selection--one p:nth-child(1),
+.player-selection--two p:nth-child(1) {
+   font-size: 3rem;
+}
+
+.player-selection--one p:not(:nth-child(1)),
+.player-selection--two p:not(:nth-child(1)) {
+   justify-self: center;
+
+   color: var(--white);
+   text-align: center;
+   width: 70%;
+   height: 2rem;
+   padding: 1rem 0;
+   border-radius: 1rem;
+}
+
+.player-selection--one p:nth-child(2) {
+   margin-top: 2.5rem;
+}
+
+.player-selection--two p:nth-child(2) {
+   margin-bottom: 1rem;
+}
+
+.game__start {
+   margin-top: 5rem;
+   padding: 1rem 2.5rem;
+   border: 2px solid var(--black);
+   border-radius: 1rem;
+}
+
+.player-selection--one p:not(:nth-child(1)):hover,
+.player-selection--two p:not(:nth-child(1)):hover,
+.game__start:hover {
+   cursor: pointer;
+   transform: scale(1.05);
+}
+
+
+   /* || interactions with JS */
+.light-black {
+   background-color: var(--light-black);
+}
+
+.selected-player {
+   background-color: var(--black);
+}
