@@ -32,10 +32,10 @@ body {
    -webkit-font-smoothing: antialiased;
 }
 
-/* img {
+img {
    display: block;
    max-width: 100%;
-} */
+}
 
 button, p, h1 {
    font: inherit;
@@ -63,6 +63,8 @@ h1 {
    --black: rgb(0, 0, 0);
    --light-black: rgba(0, 0, 0, 0.5);
    --white: rgb(255, 255, 255);
+   --grey: rgb(120, 120, 120);
+   --cell-bgcolor: rgba(120, 120, 120, 0.1);
 }
 
 
@@ -73,7 +75,14 @@ body {
    font-size: 1.6rem;
 }
 
-.game__interface {
+img {
+   width: 4rem;
+   height: 4rem;
+}
+
+.page--1 .game__interface,
+.static-content,
+.dynamic-content {
    display: flex;
    flex-direction: column;
    align-items: center;
@@ -82,13 +91,14 @@ body {
 .game__title {
    font-weight: 700;
    font-size: 5rem;
-   padding: 5rem 0;
+   margin: 5rem 0;
 }
 
+   /* || PAGE ONE / PLAYER SELECTION */
 .game__player-selection {
    display: flex;
    gap: 10rem;
-   padding-bottom: 5rem;
+   margin-bottom: 5rem;
 }
 
 .player-selection--one p:nth-child(1),
@@ -116,22 +126,97 @@ body {
    margin-bottom: 1rem;
 }
 
-.game__start {
-   margin-top: 5rem;
-   padding: 1rem 2.5rem;
-   border: 2px solid var(--black);
-   border-radius: 1rem;
-}
-
 .player-selection--one p:not(:nth-child(1)):hover,
 .player-selection--two p:not(:nth-child(1)):hover,
-.game__start:hover {
+.game__start:hover,
+.game__restart:hover {
    cursor: pointer;
    transform: scale(1.05);
 }
 
+.game__start, .game__restart {
+   padding: 1rem 2.5rem;
+   border: 2px solid var(--black);
+   border-radius: 1rem;
+}
+.game__start {
+   margin-top: 5rem;
+}
 
-   /* || interactions with JS */
+   /* || PAGE TWO / PLAYING THE GAME */
+.page--2 .game__title {
+   margin-bottom: 3rem;
+}
+
+.dynamic-content {
+   height: 32rem;
+}
+
+.game__scores {
+   display: flex;
+   gap: 2rem;
+   width: 100%;
+   justify-content: center;
+   margin-bottom: 3rem;
+}
+
+.game__scores img {
+   width: 2rem;
+   height: 2rem;
+}
+
+.score--for-X, .score--for-O {
+   width: 15%;
+   border: 1px solid var(--black);
+   border-bottom: none;
+   border-radius: 1rem;
+   padding: 1rem;
+
+   display: flex;
+   justify-content: space-between;
+}
+
+.game__player-turn {
+   margin-bottom: 3rem;
+}
+
+.game__gameboard {
+   margin-bottom: 3rem;
+
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+}
+
+.gameboard-cell {
+   width: 5rem;
+   height: 5rem;
+}
+
+.gameboard-cell:is(
+   :nth-child(1),
+   :nth-child(2),
+   :nth-child(3),
+   :nth-child(4),
+   :nth-child(5),
+   :nth-child(6)) {
+      border-bottom: 4px solid var(--grey);
+}
+
+.gameboard-cell:is(
+   :nth-child(1),
+   :nth-child(4),
+   :nth-child(7),
+   :nth-child(2),
+   :nth-child(5),
+   :nth-child(8)) {
+      border-right: 4px solid var(--grey);
+}
+
+.gameboard-cell:hover {
+   background-color: var(--cell-bgcolor);
+}
+
+   /* || INTERACTIONS WITH JS */
 .standalone, .choose-only-one {
    background-color: var(--light-black);
 }
