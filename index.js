@@ -110,18 +110,29 @@ let pageOneController = {
 
    cacheDom: function() {
       this.startGame = gameController.cacheDom().querySelector(".game__start");
-      this.playerSelection = gameController.cacheDom().querySelector(".game__player-selection");
+      this.playerSelectionOne = gameController.cacheDom().querySelector(".standalone");
+      this.playerSelectionTwo = gameController.cacheDom().querySelectorAll(".choose-only-one");
    },
 
    bindEvents: function() {
       this.startGame.addEventListener("click", this.redirectToMainGame.bind(this));
-      this.playerSelection.addEventListener("click", this.changeBtnColor.bind(this));
+      this.playerSelectionOne.addEventListener("click", this.changeBtnColor.bind(this));
+      this.playerSelectionTwo.forEach((player) => {
+         player.addEventListener("click", this.changeBtnColor.bind(this));
+      });
    },
 
    changeBtnColor: function(event) {
-      if (event.target.classList.contains("light-black")) {
-         event.target.classList.remove("light-black");
+      if (event.target.classList.contains("standalone")) {
          event.target.classList.add("selected-player");
+      } else {
+         this.playerSelectionTwo.forEach((player) => {
+            if ((player === event.target) && !event.target.classList.contains("selected-player")) {
+               event.target.classList.add("selected-player");
+            } else if (player !== event.target) {
+               player.classList.remove("selected-player");
+            }
+         });
       }
    },
 
