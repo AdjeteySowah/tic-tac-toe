@@ -132,7 +132,7 @@ body {
 
 
    /* || interactions with JS */
-.light-black {
+.standalone, .choose-only-one {
    background-color: var(--light-black);
 }
 
