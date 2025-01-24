@@ -8,7 +8,7 @@ let playerFactory = function(name, marker) {
    return {
       name,
       marker,
-   }
+   };
 };
 
 
@@ -50,12 +50,14 @@ let gameController = {
 
          if (this.checkWinner()) {
             console.log(`${this.currentPlayer.name} wins!`);
-            this.resetGameboard();
+            pageTwoController.updateScores();
+            pageTwoController.displayWinner();
          } else if (this.isDraw()) {
             console.log("It's a draw!")
-            this.resetGameboard();
+            pageTwoController.displayDraw();
          } else {
             this.switchPlayer();
+            pageTwoController.displayCurrentPlayerTurn();
          }
       } else {
          console.log("Selected cell is already taken!");
@@ -85,9 +87,8 @@ let gameController = {
       return draw;
    },
 
-   resetGameboard: function() {           // check this function
+   resetGameboard: function() {
       gameboard.markers.fill(null);
-      this.init();
    },
 
    pageSpecificInit: function() {
@@ -118,8 +119,10 @@ let pageOneController = {
       this.playerSelectionOne.addEventListener("click", this.changeBtnColor.bind(this));
       this.playerSelectionTwo.forEach((player) => {
          player.addEventListener("click", this.changeBtnColor.bind(this));
-      });
+      });  
    },
+
+   selectedPlayers: [],
 
    changeBtnColor: function(event) {
       if (event.target.classList.contains("standalone") && !event.target.classList.contains("selected-player")) {
@@ -133,10 +136,23 @@ let pageOneController = {
             }
          });
       }
+      this.fillSelectedPlayersArray(event);
+   },
+
+   fillSelectedPlayersArray: function(event) {
+      if (event.target.classList.contains("standalone")) {
+         this.selectedPlayers[0] = event.target.textContent;
+      } else {
+         this.selectedPlayers[1] = event.target.textContent;
+      }
    },
 
    redirectToMainGame: function() {
-      window.location.href = "tic-tac-toe.html";
+      if (this.selectedPlayers[0] === undefined || this.selectedPlayers[1] === undefined) {
+         alert("Please select a player type for each player");
+      } else {
+         window.location.href = "tic-tac-toe.html";
+      }
    },
 };
 
@@ -144,48 +160,30 @@ let pageOneController = {
 let pageTwoController = {
    init: function() {
       this.cacheDom();
-      // this.bindEvents();
+      this.bindEvents();
       this.render();
    },
 
    cacheDom: function() {
       this.dynamicContent = gameController.cacheDom().querySelector(".dynamic-content");
+      this.scoreXDiv = gameController.cacheDom().querySelector(".score--for-X");
+      this.scoreODiv = gameController.cacheDom().querySelector(".score--for-O");
+      this.scoreX = gameController.cacheDom().querySelector(".score-X");
+      this.scoreO = gameController.cacheDom().querySelector(".score-O");
+      this.restartGame = gameController.cacheDom().querySelector(".game__restart");
    },
 
-   // bindEvents: function() {
-
-   // },
+   bindEvents: function() {
+      this.dynamicContent.addEventListener("click", this.placeMarkerInCell.bind(this));
+      this.restartGame.addEventListener("click", this.playNewGame.bind(this));
+   },
 
    render: function() {
       this.dynamicContent.innerHTML = "";
-         let div1 = document.createElement("div");
-         div1.setAttribute("class", "game__scores");
-            let div11 = document.createElement("div");
-            div11.setAttribute("class", "score--for-X");
-               let img1 = document.createElement("img");
-               img1.setAttribute("src", "./assets/imgs/close.svg");
-               img1.setAttribute("alt", "X");
-               let paragraph1 = document.createElement("p");
-               paragraph1.setAttribute("class", "score-X");
-               paragraph1.innerHTML = "&#x2013;";
-            div11.appendChild(img1);
-            div11.appendChild(paragraph1);
-            let div12 = document.createElement("div");
-            div12.setAttribute("class", "score--for-O");
-               let img2 = document.createElement("img");
-               img2.setAttribute("src", "./assets/imgs/circle.svg");
-               img2.setAttribute("alt", "O");
-               let paragraph2 = document.createElement("p");
-               paragraph2.setAttribute("class", "score-O");
-               paragraph2.innerHTML = "&#x2013;";
-            div12.appendChild(img2);
-            div12.appendChild(paragraph2);
-         div1.appendChild(div11);
-         div1.appendChild(div12);
-
          let paragraph = document.createElement("p");
          paragraph.setAttribute("class", "game__player-turn");
          paragraph.textContent = `${gameController.currentPlayer.marker} Turn`;
+         this.playerTurnParagraph = paragraph;
 
          let div2 = document.createElement("div");
          div2.setAttribute("class", "game__gameboard");
@@ -225,9 +223,114 @@ let pageTwoController = {
          div2.appendChild(div27);
          div2.appendChild(div28);
          div2.appendChild(div29);   
-      this.dynamicContent.appendChild(div1);
       this.dynamicContent.appendChild(paragraph);
       this.dynamicContent.appendChild(div2);
+   },
+
+   displayCurrentPlayerTurn: function() {
+         // make the divs' border recording the scores for the players thicker
+      if (gameController.currentPlayer.marker === "X") {
+         this.scoreXDiv.classList.add("thick-border");
+      } else {
+         this.scoreXDiv.classList.remove("thick-border");
+      }
+
+      if (gameController.currentPlayer.marker === "O") {
+         this.scoreODiv.classList.add("thick-border");
+      } else {
+         this.scoreODiv.classList.remove("thick-border");
+      }
+         // show whose turn it is
+      this.playerTurnParagraph.textContent = `${gameController.currentPlayer.marker} Turn`;
+   },
+
+   placeMarkerInCell: function(event) {
+      if (event.target.classList.contains("gameboard-cell") && gameController.currentPlayer.marker === "X") {
+         if (event.target.innerHTML === "") {
+            console.log(event.target);
+            let dataIndex = event.target.getAttribute('data-index');
+            let img = document.createElement("img");
+            img.src = "./assets/imgs/close.svg";
+            img.alt = "X";
+            event.target.appendChild(img);
+            gameController.playTurn(dataIndex);
+         }
+      } else if (event.target.classList.contains("gameboard-cell")) {
+         if (event.target.innerHTML === "") {
+            console.log(event.target);
+            let dataIndex = event.target.getAttribute('data-index');
+            let img = document.createElement("img");
+            img.src = "./assets/imgs/circle.svg";
+            img.alt = "O";
+            event.target.appendChild(img);
+            gameController.playTurn(dataIndex);
+         }
+      }
+   },
+
+   displayWinner: function() {
+      this.dynamicContent.innerHTML = "";
+         let paragraph1 = document.createElement("p");
+         paragraph1.setAttribute("class", "gameover__marker");
+            if (gameController.currentPlayer.marker === "X") {
+               let img = document.createElement("img");
+               img.setAttribute("src", "./assets/imgs/close.svg");
+               img.setAttribute("alt", "X");
+               img.setAttribute("class", "big-marker");
+               paragraph1.appendChild(img);
+            } else if (gameController.currentPlayer.marker === "O") {
+               let img = document.createElement("img");
+               img.setAttribute("src", "./assets/imgs/circle.svg");
+               img.setAttribute("alt", "O");
+               img.setAttribute("class", "big-marker");
+               paragraph1.appendChild(img);
+            }
+         let paragraph2 = document.createElement("p");
+         paragraph2.setAttribute("class", "gameover__result");
+         paragraph2.textContent = "WINNER!"
+      this.dynamicContent.appendChild(paragraph1);
+      this.dynamicContent.appendChild(paragraph2);
+   },
+
+   displayDraw: function() {
+      this.dynamicContent.innerHTML = "";
+         let paragraph1 = document.createElement("p");
+         paragraph1.setAttribute("class", "gameover__marker");
+            let img1 = document.createElement("img");
+            img1.setAttribute("src", "./assets/imgs/close.svg");
+            img1.setAttribute("alt", "X");
+            img1.setAttribute("class", "big-marker");
+            let img2 = document.createElement("img");
+            img2.setAttribute("src", "./assets/imgs/circle.svg");
+            img2.setAttribute("alt", "O");
+            img2.setAttribute("class", "big-marker");
+         paragraph1.appendChild(img1);
+         paragraph1.appendChild(img2);
+         let paragraph2 = document.createElement("p");
+         paragraph2.setAttribute("class", "gameover__result");
+         paragraph2.textContent = "DRAW!"
+      this.dynamicContent.appendChild(paragraph1);
+      this.dynamicContent.appendChild(paragraph2);
+   },
+
+   updateScores: function() {
+      if (gameController.currentPlayer.marker === "X") {
+         let score = 0;
+         score = score + 1;
+         this.scoreX.textContent = score;
+      } else {
+         let score = 0;
+         score = score + 1;
+         this.scoreO.textContent = score;
+      }
+   },
+
+   playNewGame: function() {
+      gameController.resetGameboard();
+      gameController.players = [playerFactory("Player1", "X"), playerFactory("Player2", "O")];
+      gameController.currentPlayer = gameController.players[0];
+      this.displayCurrentPlayerTurn();
+      this.render();
    },
 };
 
