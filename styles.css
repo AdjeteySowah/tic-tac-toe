@@ -64,7 +64,6 @@ h1 {
    --light-black: rgba(0, 0, 0, 0.5);
    --white: rgb(255, 255, 255);
    --grey: rgb(120, 120, 120);
-   --cell-bgcolor: rgba(120, 120, 120, 0.1);
 }
 
 
@@ -81,7 +80,8 @@ img {
 }
 
 .page--1 .game__interface,
-.static-content,
+.static-content--up,
+.static-content--down,
 .dynamic-content {
    display: flex;
    flex-direction: column;
@@ -149,7 +149,8 @@ img {
 }
 
 .dynamic-content {
-   height: 32rem;
+   height: 23.9rem;
+   justify-content: center;        /* This height will keep the restart btn in a fixed position */
 }
 
 .game__scores {
@@ -166,9 +167,8 @@ img {
 }
 
 .score--for-X, .score--for-O {
-   width: 15%;
+   width: 12%;
    border: 1px solid var(--black);
-   border-bottom: none;
    border-radius: 1rem;
    padding: 1rem;
 
@@ -190,6 +190,10 @@ img {
 .gameboard-cell {
    width: 5rem;
    height: 5rem;
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }
 
 .gameboard-cell:is(
@@ -212,15 +216,40 @@ img {
       border-right: 4px solid var(--grey);
 }
 
-.gameboard-cell:hover {
-   background-color: var(--cell-bgcolor);
+.gameover__marker {
+   display: flex;
+   /* height: 16rem; */
 }
 
    /* || INTERACTIONS WITH JS */
+      /* grey btn color when not selected/clicked */
 .standalone, .choose-only-one {
    background-color: var(--light-black);
 }
-
+      /* black btn color when selected/clicked */
 .selected-player {
    background-color: var(--black);
+}
+
+.thick-border {
+   border: 3px solid var(--black);
+}
+
+.big-marker {
+   animation: scaleUp 0.4s linear forwards;
+}
+
+@keyframes scaleUp {
+   0% {
+      transform: scale(1);
+   }
+   25% {
+      transform: scale(2);
+   }
+   50% {
+      transform: scale(3);
+   }
+   100% {
+      transform: scale(4);
+   }
 }
