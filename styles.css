@@ -149,8 +149,8 @@ img {
 }
 
 .dynamic-content {
-   height: 27.9rem;        
-   justify-content: center;         /* This height will keep the restart btn in a fixed position */
+   height: 27.9rem;           /* This height will keep the restart btn in a fixed position */    
+   justify-content: center;
 }
 
 .game__scores {
