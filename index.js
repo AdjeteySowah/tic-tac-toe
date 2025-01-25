@@ -271,31 +271,38 @@ let pageTwoController = {
    displayWinner: function() {
       this.dynamicContent.innerHTML = "";
          let paragraph1 = document.createElement("p");
-         paragraph1.setAttribute("class", "gameover__marker");
+         paragraph1.setAttribute("class", "gameover-text");
+         paragraph1.textContent = "Game Over";
+         let paragraph2 = document.createElement("p");
+         paragraph2.setAttribute("class", "gameover__marker");
             if (gameController.currentPlayer.marker === "X") {
                let img = document.createElement("img");
                img.setAttribute("src", "./assets/imgs/close.svg");
                img.setAttribute("alt", "X");
                img.setAttribute("class", "big-marker");
-               paragraph1.appendChild(img);
+               paragraph2.appendChild(img);
             } else if (gameController.currentPlayer.marker === "O") {
                let img = document.createElement("img");
                img.setAttribute("src", "./assets/imgs/circle.svg");
                img.setAttribute("alt", "O");
                img.setAttribute("class", "big-marker");
-               paragraph1.appendChild(img);
+               paragraph2.appendChild(img);
             }
-         let paragraph2 = document.createElement("p");
-         paragraph2.setAttribute("class", "gameover__result");
-         paragraph2.textContent = "WINNER!"
+         let paragraph3 = document.createElement("p");
+         paragraph3.setAttribute("class", "gameover__result");
+         paragraph3.textContent = "WINNER!"
       this.dynamicContent.appendChild(paragraph1);
       this.dynamicContent.appendChild(paragraph2);
+      this.dynamicContent.appendChild(paragraph3);
    },
 
    displayDraw: function() {
       this.dynamicContent.innerHTML = "";
          let paragraph1 = document.createElement("p");
-         paragraph1.setAttribute("class", "gameover__marker");
+         paragraph1.setAttribute("class", "gameover-text");
+         paragraph1.textContent = "Game Over";
+         let paragraph2 = document.createElement("p");
+         paragraph2.setAttribute("class", "gameover__marker");
             let img1 = document.createElement("img");
             img1.setAttribute("src", "./assets/imgs/close.svg");
             img1.setAttribute("alt", "X");
@@ -304,13 +311,14 @@ let pageTwoController = {
             img2.setAttribute("src", "./assets/imgs/circle.svg");
             img2.setAttribute("alt", "O");
             img2.setAttribute("class", "big-marker");
-         paragraph1.appendChild(img1);
-         paragraph1.appendChild(img2);
-         let paragraph2 = document.createElement("p");
-         paragraph2.setAttribute("class", "gameover__result");
-         paragraph2.textContent = "DRAW!"
+         paragraph2.appendChild(img1);
+         paragraph2.appendChild(img2);
+         let paragraph3 = document.createElement("p");
+         paragraph3.setAttribute("class", "gameover__result");
+         paragraph3.textContent = "DRAW!"
       this.dynamicContent.appendChild(paragraph1);
       this.dynamicContent.appendChild(paragraph2);
+      this.dynamicContent.appendChild(paragraph3);
    },
 
    updateScores: function() {
