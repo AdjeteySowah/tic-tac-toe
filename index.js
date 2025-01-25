@@ -51,6 +51,7 @@ let gameController = {
          if (this.checkWinner()) {
             console.log(`${this.currentPlayer.name} wins!`);
             pageTwoController.updateScores();
+            // call blink
             pageTwoController.displayWinner();
          } else if (this.isDraw()) {
             console.log("It's a draw!")
@@ -152,6 +153,7 @@ let pageOneController = {
          alert("Please select a player type for each player");
       } else {
          window.location.href = "tic-tac-toe.html";
+         sessionStorage.setItem("selectedPlayers",  JSON.stringify(this.selectedPlayers));
       }
    },
 };
@@ -177,6 +179,8 @@ let pageTwoController = {
       this.dynamicContent.addEventListener("click", this.placeMarkerInCell.bind(this));
       this.restartGame.addEventListener("click", this.playNewGame.bind(this));
    },
+
+   selectedPlayers: JSON.parse(sessionStorage.getItem("selectedPlayers")),
 
    render: function() {
       this.dynamicContent.innerHTML = "";
@@ -247,7 +251,6 @@ let pageTwoController = {
    placeMarkerInCell: function(event) {
       if (event.target.classList.contains("gameboard-cell") && gameController.currentPlayer.marker === "X") {
          if (event.target.innerHTML === "") {
-            console.log(event.target);
             let dataIndex = event.target.getAttribute('data-index');
             let img = document.createElement("img");
             img.src = "./assets/imgs/close.svg";
@@ -257,7 +260,6 @@ let pageTwoController = {
          }
       } else if (event.target.classList.contains("gameboard-cell")) {
          if (event.target.innerHTML === "") {
-            console.log(event.target);
             let dataIndex = event.target.getAttribute('data-index');
             let img = document.createElement("img");
             img.src = "./assets/imgs/circle.svg";
@@ -266,7 +268,78 @@ let pageTwoController = {
             gameController.playTurn(dataIndex);
          }
       }
+      setTimeout(this.placeMarkerInCellByAI.bind(this), 2000);
    },
+
+   placeMarkerInCellByAI: function () {
+      if (this.selectedPlayers[1] === "AI") {
+         if (
+            gameController.currentPlayer.marker === "O" &&
+            gameController.checkWinner() === false &&
+            gameController.isDraw() === false
+         ) {
+            let gameboardM = gameboard.markers;
+            let selectedIndex = null; // To store the final move index
+   
+            // Check for winning move
+            for (let i = 0; i < 9; i++) {
+               if (gameboardM[i] === null) {
+                  gameboardM[i] = "O";
+                  if (gameController.checkWinner()) {
+                     gameboardM[i] = null;
+                     selectedIndex = i;
+                     break;
+                  }
+                  gameboardM[i] = null;
+               }
+            }
+   
+            // Check for blocking move
+            if (selectedIndex === null) {
+               for (let i = 0; i < 9; i++) {
+                  if (gameboardM[i] === null) {
+                     gameboardM[i] = "X";
+                     if (gameController.checkWinner()) {
+                        gameboardM[i] = null;
+                        selectedIndex = i;
+                        break;
+                     }
+                     gameboardM[i] = null;
+                  }
+               }
+            }
+   
+            // Random move (fallback)
+            if (selectedIndex === null) {
+               for (let i = 0; i < 9; i++) {
+                  if (gameboardM[i] === null) {
+                     selectedIndex = i;
+                     break;
+                  }
+               }
+            }
+   
+            // Place the final move
+            if (selectedIndex !== null) {
+               // Append image to the DOM
+               const targetCell = document.querySelector(`[data-index="${selectedIndex}"]`);
+               if (targetCell && targetCell.innerHTML === "") {
+                  let img = document.createElement("img");
+                  img.src = "./assets/imgs/circle.svg";
+                  img.alt = "O";
+                  targetCell.appendChild(img);
+               }
+   
+               // Pass control back to the game
+               gameController.playTurn(selectedIndex);
+            }
+         }
+      }
+   },
+
+   // showWinningCombination: function() {
+
+   // },
 
    displayWinner: function() {
       this.dynamicContent.innerHTML = "";
@@ -321,15 +394,16 @@ let pageTwoController = {
       this.dynamicContent.appendChild(paragraph3);
    },
 
+   currentScoreX: 0,
+   currentScoreO: 0,
+
    updateScores: function() {
       if (gameController.currentPlayer.marker === "X") {
-         let score = 0;
-         score = score + 1;
-         this.scoreX.textContent = score;
+         this.currentScoreX = this.currentScoreX + 1;
+         this.scoreX.textContent = this.currentScoreX;
       } else {
-         let score = 0;
-         score = score + 1;
-         this.scoreO.textContent = score;
+         this.currentScoreO = this.currentScoreO + 1;
+         this.scoreO.textContent = this.currentScoreO;
       }
    },
 
