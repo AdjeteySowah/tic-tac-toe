@@ -46,22 +46,17 @@ let gameController = {
    playTurn: function(cell) {
       if (gameboard.markers[cell] === null) {
          gameboard.markers[cell] = this.currentPlayer.marker;
-         console.log(`${this.currentPlayer.name}(${this.currentPlayer.marker}) has selected cell ${cell}`);
 
          if (this.checkWinner()) {
-            console.log(`${this.currentPlayer.name} wins!`);
             pageTwoController.updateScores();
-            // call blink
-            pageTwoController.displayWinner();
+            pageTwoController.showWinningCombination();
+            setTimeout(pageTwoController.displayWinner.bind(pageTwoController), 1000);        // It waits for the blinking to occur
          } else if (this.isDraw()) {
-            console.log("It's a draw!")
             pageTwoController.displayDraw();
          } else {
             this.switchPlayer();
             pageTwoController.displayCurrentPlayerTurn();
          }
-      } else {
-         console.log("Selected cell is already taken!");
       }
    },
 
@@ -73,6 +68,7 @@ let gameController = {
              gameboard.markers[a] === gameboard.markers[b] &&
              gameboard.markers[a] === gameboard.markers[c]) {
                winnerFound = true;
+               pageTwoController.desiredWinningCombinations.push(combination);
             }
       });
       return winnerFound;
@@ -322,7 +318,7 @@ let pageTwoController = {
             // Place the final move
             if (selectedIndex !== null) {
                // Append image to the DOM
-               const targetCell = document.querySelector(`[data-index="${selectedIndex}"]`);
+               let targetCell = document.querySelector(`[data-index="${selectedIndex}"]`);
                if (targetCell && targetCell.innerHTML === "") {
                   let img = document.createElement("img");
                   img.src = "./assets/imgs/circle.svg";
@@ -337,9 +333,30 @@ let pageTwoController = {
       }
    },
 
-   // showWinningCombination: function() {
+   desiredWinningCombinations: [],
 
-   // },
+   showWinningCombination: function() {
+      let desiredWinningCombination = this.desiredWinningCombinations[this.desiredWinningCombinations.length - 1];
+      let [a, b, c] = desiredWinningCombination;
+      let targetCell1 = document.querySelector(`[data-index="${a}"]`);
+      let targetCell2 = document.querySelector(`[data-index="${b}"]`);
+      let targetCell3 = document.querySelector(`[data-index="${c}"]`);
+      let targetCells = [targetCell1, targetCell2, targetCell3];
+
+      targetCells.forEach((cell) => {
+         if (cell && cell.innerHTML) {
+            let tempContainer = document.createElement("div");
+            tempContainer.innerHTML = cell.innerHTML;
+
+            let imgElement = tempContainer.querySelector("img");
+            if (imgElement) {
+               imgElement.classList.add("blink");
+               cell.innerHTML = tempContainer.innerHTML;
+            }
+         }
+      });
+   },
+  
 
    displayWinner: function() {
       this.dynamicContent.innerHTML = "";
