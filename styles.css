@@ -104,6 +104,7 @@ img {
 .player-selection--one p:nth-child(1),
 .player-selection--two p:nth-child(1) {
    font-size: 3rem;
+   margin-bottom: 3rem;
 }
 
 .player-selection--one p:not(:nth-child(1)),
@@ -119,7 +120,7 @@ img {
 }
 
 .player-selection--one p:nth-child(2) {
-   margin-top: 2.5rem;
+   margin-top: calc(2.5rem + 3rem);               /* The addition of 3rem keeps it between the other two elements on the right */
 }
 
 .player-selection--two p:nth-child(2) {
@@ -295,7 +296,17 @@ img {
    /* || MEDIA QUERY */
 @media screen and (width < 50rem) {
    .game__player-selection {
-      gap: 4rem;
+      gap: 0;
+   }
+
+   .player-selection--one p:nth-child(1), 
+   .player-selection--two p:nth-child(1) {
+      text-align: center;
+      margin-bottom: 3rem;
+   }
+
+   .player-selection--one p:nth-child(2) {
+      margin-top: calc(2.5rem + 3rem);
    }
 
    .score--for-X, .score--for-O {
