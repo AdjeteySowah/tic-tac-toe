@@ -269,3 +269,25 @@ img {
       opacity: 1;
    }
 }
+
+.blink {
+   animation: blink 0.4s linear forwards;
+}
+
+@keyframes blink {
+   0% {
+      opacity: 1;
+   }
+   25% {
+      opacity: 0.25;
+   }
+   50% {
+      opacity: 1;
+   }
+   75% {
+      opacity: 0.25;
+   }
+   100% {
+      opacity: 1;
+   }
+}
