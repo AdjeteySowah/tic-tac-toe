@@ -272,7 +272,7 @@ img {
 }
 
 .blink {
-   animation: blink 0.4s linear forwards;
+   animation: blink 1s linear forwards;
 }
 
 @keyframes blink {
@@ -280,13 +280,13 @@ img {
       opacity: 1;
    }
    25% {
-      opacity: 0.25;
+      opacity: 0.2;
    }
    50% {
       opacity: 1;
    }
    75% {
-      opacity: 0.25;
+      opacity: 0.2;
    }
    100% {
       opacity: 1;
@@ -303,6 +303,10 @@ img {
    .player-selection--two p:nth-child(1) {
       text-align: center;
       margin-bottom: 3rem;
+   }
+
+   .disp-block {
+      display: block;
    }
 
    .player-selection--one p:nth-child(1) {
