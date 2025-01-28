@@ -116,7 +116,15 @@ let pageOneController = {
       this.playerSelectionOne.addEventListener("click", this.changeBtnColor.bind(this));
       this.playerSelectionTwo.forEach((player) => {
          player.addEventListener("click", this.changeBtnColor.bind(this));
-      });  
+      });
+      window.addEventListener("load", this.showAlert);
+   },
+
+   showAlert: function() {
+      if (!localStorage.getItem("alertShown")) {
+         alert(`Welcome to my Tic-Tac-Toe game! \n\nChoose your game mode: Player vs Player or Player vs AI. \nPlayer X always starts first. Take turns placing your markers, and get three in a row, column, or diagonal to win. \nHave Fun!`);
+         localStorage.setItem("alertShown", "true");
+      }
    },
 
    selectedPlayers: [],
@@ -264,7 +272,7 @@ let pageTwoController = {
             gameController.playTurn(dataIndex);
          }
       }
-      setTimeout(this.placeMarkerInCellByAI.bind(this), 2000);
+      setTimeout(this.placeMarkerInCellByAI.bind(this), 1000);
    },
 
    placeMarkerInCellByAI: function () {
