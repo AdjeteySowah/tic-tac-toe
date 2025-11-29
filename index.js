@@ -48,6 +48,7 @@ let gameController = {
          gameboard.markers[cell] = this.currentPlayer.marker;
 
          if (this.checkWinner()) {
+            pageTwoController.lockBoard();
             pageTwoController.updateScores();
             pageTwoController.showWinningCombination();
             setTimeout(pageTwoController.displayWinner.bind(pageTwoController), 1000);        // It waits for the blinking to occur
@@ -252,7 +253,21 @@ let pageTwoController = {
       this.playerTurnParagraph.textContent = `${gameController.currentPlayer.marker} Turn`;
    },
 
+   boardLocked: false,
+
+   lockBoard: function() {
+      this.boardLocked = true;
+      this.dynamicContent.classList.add("locked");
+   },
+
+   unlockBoard: function() {
+      this.boardLocked = false;
+      this.dynamicContent.classList.remove("locked");
+   },
+
    placeMarkerInCell: function(event) {
+      if (this.boardLocked) return;
+
       if (event.target.classList.contains("gameboard-cell") && gameController.currentPlayer.marker === "X") {
          if (event.target.innerHTML === "") {
             let dataIndex = event.target.getAttribute('data-index');
@@ -272,7 +287,23 @@ let pageTwoController = {
             gameController.playTurn(dataIndex);
          }
       }
-      setTimeout(this.placeMarkerInCellByAI.bind(this), 1000);
+
+      if (
+         this.selectedPlayers[1] === "AI" &&
+         gameController.currentPlayer.marker === "O" &&
+         !gameController.checkWinner() &&
+         !gameController.isDraw()
+      ) {
+         this.lockBoard();
+         setTimeout(() => {
+            this.placeMarkerInCellByAI();
+
+            // only unlock if there's no winner and no draw after the AI move
+            if (!gameController.checkWinner() && !gameController.isDraw()) {
+               this.unlockBoard();
+            }
+         }, 800);
+      }
    },
 
    placeMarkerInCellByAI: function () {
@@ -436,6 +467,7 @@ let pageTwoController = {
       gameController.resetGameboard();
       gameController.players = [playerFactory("Player1", "X"), playerFactory("Player2", "O")];
       gameController.currentPlayer = gameController.players[0];
+      this.unlockBoard();
       this.displayCurrentPlayerTurn();
       this.render();
    },
